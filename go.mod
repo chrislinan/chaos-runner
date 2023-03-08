@@ -6,7 +6,7 @@ require (
 	github.com/aws/aws-sdk-go v1.38.59
 	github.com/fvbommel/sortorder v1.0.1
 	github.com/jpillora/go-ogle-analytics v0.0.0-20161213085824-14b04e0594ef
-	github.com/litmuschaos/chaos-operator v0.0.0-20230109130222-de7c74a937a9
+	github.com/litmuschaos/chaos-operator v0.0.0-20230308055038-155d6cd72931
 	github.com/litmuschaos/elves v0.0.0-20230109130230-d8c7345dd5ba
 	github.com/litmuschaos/litmus-go v0.0.0-20221116073419-e9a880ac55c9
 	github.com/magiconair/properties v1.8.5
