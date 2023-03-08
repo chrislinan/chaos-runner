@@ -1,11 +1,25 @@
 package main
 
 import (
+	"fmt"
+	"github.com/litmuschaos/chaos-runner/pkg/config"
 	"github.com/litmuschaos/chaos-runner/pkg/log"
+	"github.com/litmuschaos/chaos-runner/pkg/popeye"
 	"github.com/litmuschaos/chaos-runner/pkg/utils"
 	"github.com/litmuschaos/chaos-runner/pkg/utils/analytics"
+	zerolog "github.com/rs/zerolog/log"
 	"github.com/sirupsen/logrus"
+	"github.com/wI2L/jsondiff"
+	"regexp"
+	"strings"
 )
+
+type ResourceIssues struct {
+	resource string
+	issue    string
+}
+
+var resultMap = make(map[string][]ResourceIssues)
 
 func init() {
 	// Log as JSON instead of the default ASCII formatter.
@@ -16,7 +30,20 @@ func init() {
 	})
 }
 
+func collectResult(gvr, issue, path string) {
+	if _, ok := resultMap[gvr]; ok {
+		issueList := resultMap[gvr]
+		issueList = append(issueList, ResourceIssues{issue: issue, resource: path})
+		resultMap[gvr] = issueList
+	} else {
+		issuelist := []ResourceIssues{{issue: issue, resource: path}}
+		resultMap[gvr] = issuelist
+	}
+}
+
 func main() {
+	flags := config.NewFlags()
+	flags.StandAlone = true
 
 	engineDetails := utils.EngineDetails{}
 	clients := utils.ClientSets{}
@@ -80,6 +107,20 @@ func main() {
 			continue
 		}
 
+		log.Infof("Scan hole cluster before running Chaos Experiment: %v", experiment.Name)
+
+		p, err := popeye.NewPopeye(flags, &zerolog.Logger)
+		if err != nil {
+			log.Errorf("Popeye configuration load failed %v", err)
+		}
+		if e := p.Init(); e != nil {
+			log.Errorf(e.Error())
+		}
+		_, _, before, err := p.Sanitize()
+		if err != nil {
+			log.Errorf(err.Error())
+		}
+
 		log.Infof("Preparing to run Chaos Experiment: %v", experiment.Name)
 
 		if err := experiment.PatchResources(engineDetails, clients); err != nil {
@@ -111,6 +152,52 @@ func main() {
 		}
 
 		log.Infof("Chaos Pod Completed, Experiment Name: %v, with Job Name: %v", experiment.Name, experiment.JobName)
+
+		log.Infof("Scan hole cluster after running Chaos Experiment: %v", experiment.Name)
+
+		_, _, after, err := p.Sanitize()
+		if err != nil {
+			log.Errorf(err.Error())
+		}
+
+		diffs, err := jsondiff.CompareJSON([]byte(before), []byte(after))
+		if err != nil {
+			// handle error
+		}
+
+		reg := regexp.MustCompile(`.*issues/`)
+		if reg == nil { //解释失败，返回nil
+			fmt.Println("regexp err")
+			return
+		}
+		var gvr, issue string
+		for _, diff := range diffs {
+			path := reg.ReplaceAllString(diff.Path.String(), "")
+			path = strings.Replace(path, "~1", "/", -1)
+			if strings.Contains(path, "tally") || diff.Type != "add" {
+				continue
+			}
+			switch diff.Value.(type) {
+			case map[string]interface{}:
+				gvr = diff.Value.(map[string]interface{})["gvr"].(string)
+				issue = diff.Value.(map[string]interface{})["message"].(string)
+			case []interface{}:
+				if len(diff.Value.([]interface{})) == 0 {
+					continue
+				}
+				for _, value := range diff.Value.([]interface{}) {
+					gvr = value.(map[string]interface{})["gvr"].(string)
+					issue = value.(map[string]interface{})["message"].(string)
+				}
+			}
+			collectResult(gvr, issue, path)
+		}
+
+		for key, value := range resultMap {
+			for _, v := range value {
+				log.Infof("New issues detected after Chaos Experiment: %s, gvr: %s, resource: %s, issue: %s", experiment.Name, key, v.resource, v.issue)
+			}
+		}
 
 		// Will Update the chaosEngine Status
 		if err := engineDetails.UpdateEngineWithResult(&experiment, clients); err != nil {

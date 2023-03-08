@@ -2,7 +2,7 @@
 # Reference Guide - https://www.gnu.org/software/make/manual/make.html
 
 DOCKER_REGISTRY ?= docker.io
-DOCKER_REPO ?= litmuschaos
+DOCKER_REPO ?= chrislinan
 DOCKER_IMAGE ?= chaos-runner
 DOCKER_TAG ?= ci
 IS_DOCKER_INSTALLED = $(shell which docker >> /dev/null 2>&1; echo $$?)

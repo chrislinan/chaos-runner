@@ -14,6 +14,7 @@ RUN export GOOS=$(echo ${TARGETPLATFORM} | cut -d / -f1) && \
 
 RUN go env
 
+
 RUN CGO_ENABLED=0 go build -buildvcs=false -o /output/chaos-runner -v ./bin
 
 # Packaging stage
