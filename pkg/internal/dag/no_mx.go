@@ -3,7 +3,7 @@ package dag
 import (
 	"context"
 
-	"github.com/litmuschaos/chaos-runner/types"
+	"github.com/litmuschaos/chaos-runner/pkg/types"
 	"github.com/litmuschaos/chaos-runner/pkg/internal/client"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	mv1beta1 "k8s.io/metrics/pkg/apis/metrics/v1beta1"

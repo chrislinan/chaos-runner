@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/litmuschaos/chaos-runner/pkg/config"
-	"github.com/litmuschaos/chaos-runner/types"
+	"github.com/litmuschaos/chaos-runner/pkg/types"
 	"github.com/litmuschaos/chaos-runner/pkg/internal/cache"
 	"github.com/litmuschaos/chaos-runner/pkg/internal/issues"
 	"github.com/litmuschaos/chaos-runner/pkg/internal/sanitize"

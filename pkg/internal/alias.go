@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/litmuschaos/chaos-runner/types"
+	"github.com/litmuschaos/chaos-runner/pkg/types"
 	"github.com/litmuschaos/chaos-runner/pkg/internal/client"
 	"github.com/rs/zerolog/log"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

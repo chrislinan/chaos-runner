@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/litmuschaos/chaos-runner/types"
+	"github.com/litmuschaos/chaos-runner/pkg/types"
 	"github.com/litmuschaos/chaos-runner/pkg/internal/client"
 	"k8s.io/apimachinery/pkg/runtime"
 )

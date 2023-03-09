@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/litmuschaos/chaos-runner/types"
+	"github.com/litmuschaos/chaos-runner/pkg/types"
 	"github.com/rs/zerolog/log"
 	"golang.org/x/net/context"
 	authorizationv1 "k8s.io/api/authorization/v1"

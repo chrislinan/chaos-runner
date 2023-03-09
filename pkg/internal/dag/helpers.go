@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/litmuschaos/chaos-runner/pkg/config"
-	"github.com/litmuschaos/chaos-runner/types"
+	"github.com/litmuschaos/chaos-runner/pkg/types"
 	"github.com/litmuschaos/chaos-runner/pkg/internal"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )

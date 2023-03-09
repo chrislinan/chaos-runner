@@ -2,7 +2,7 @@ package scrub
 
 import (
 	"github.com/litmuschaos/chaos-runner/pkg/config"
-	"github.com/litmuschaos/chaos-runner/types"
+	"github.com/litmuschaos/chaos-runner/pkg/types"
 )
 
 type dial struct {
