@@ -44,6 +44,8 @@ func collectResult(gvr, issue, path string) {
 func main() {
 	flags := config.NewFlags()
 	flags.StandAlone = true
+	level := "error"
+	flags.LintLevel = &level
 
 	engineDetails := utils.EngineDetails{}
 	clients := utils.ClientSets{}
@@ -179,6 +181,9 @@ func main() {
 			}
 			switch diff.Value.(type) {
 			case map[string]interface{}:
+				if diff.Value.(map[string]interface{})["gvr"] == nil || diff.Value.(map[string]interface{})["message"] == nil {
+					continue
+				}
 				gvr = diff.Value.(map[string]interface{})["gvr"].(string)
 				issue = diff.Value.(map[string]interface{})["message"].(string)
 			case []interface{}:
@@ -186,6 +191,9 @@ func main() {
 					continue
 				}
 				for _, value := range diff.Value.([]interface{}) {
+					if value.(map[string]interface{})["gvr"] == nil || value.(map[string]interface{})["message"] == nil {
+						continue
+					}
 					gvr = value.(map[string]interface{})["gvr"].(string)
 					issue = value.(map[string]interface{})["message"].(string)
 				}

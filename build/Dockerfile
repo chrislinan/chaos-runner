@@ -9,6 +9,8 @@ ARG TARGETPLATFORM
 ADD . /chaos-runner
 WORKDIR /chaos-runner
 
+ENV GOPROXY=goproxy.cn
+
 RUN export GOOS=$(echo ${TARGETPLATFORM} | cut -d / -f1) && \
     export GOARCH=$(echo ${TARGETPLATFORM} | cut -d / -f2)
 

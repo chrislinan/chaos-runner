@@ -4,7 +4,7 @@
 DOCKER_REGISTRY ?= docker.io
 DOCKER_REPO ?= chrislinan
 DOCKER_IMAGE ?= chaos-runner
-DOCKER_TAG ?= ci
+DOCKER_TAG ?= 0.1.2
 IS_DOCKER_INSTALLED = $(shell which docker >> /dev/null 2>&1; echo $$?)
 HOME = $(shell echo $$HOME)
 
